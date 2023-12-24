@@ -52,13 +52,14 @@ local function d2xy(n, d)
     while s < n do
         rx = AND(1, SHR(t, 1)) -- 1|0
         ry = AND(1, XOR(t, rx)) -- 1|0
+        rx = NOT(rx - 1) -- UNM
         
         -- if ry == 0 then XOR SWAP(x, y)
         -- -- if rx ~= 0 then x, y = s + NOT(x), s + NOT(y) 
-        x = XOR(x, AND(y, ry - 1) + AND(s + NOT(y + y), -rx))
+        x = XOR(x, AND(y, ry - 1) + AND(s + NOT(y + y), rx))
         y = XOR(y, AND(x, ry - 1))
-        x = XOR(x, AND(y, ry - 1) + AND(s + NOT(y + y), -rx))
-        x = OR(x + AND(s, -rx)) -- x = x | x = x + s
+        x = XOR(x, AND(y, ry - 1) + AND(s + NOT(y + y), rx))
+        x = OR(x + AND(s, rx)) -- x = x | x = x + s
         y = OR(y + AND(s, -ry)) -- y = y | y = y + s
         s = SHL(s, 1) -- s = s*2
         t = SHR(t, 2) -- t = t/4
