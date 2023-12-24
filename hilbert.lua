@@ -30,7 +30,7 @@ local function xy2d(n, x, y)
             rx == 1 and ry == 1 --> 2*qn --> qn + qn
             rx == 1 and ry == 0 --> 3*qn --> qn + qn + qn
             
-            d = d + OR( AND(value, -XOR(rx, ry)) + AND(SHL(value, 1), -rx) )
+            d = d + OR( AND(qn, -XOR(rx, ry)) + AND(SHL(qn, 1), -rx) )
             
             qn = SHR(qn, 2)
         --]]
