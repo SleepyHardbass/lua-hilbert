@@ -1,8 +1,9 @@
-local NOT, AND, XOR, SHL, SAR, SHR; do
+local NOT, AND, XOR, OR, SHL, SAR, SHR; do
     local bit = require("bit")
     NOT = bit.bnot
     AND = bit.band
     XOR = bit.bxor
+    OR = bit.bor
     SHL = bit.lshift
     SAR = bit.arshift
     SHR = bit.rshift
@@ -21,10 +22,16 @@ local function xy2d(n, x, y)
         --[[ mbmb
             qn = n*n
             LOOP:
+            rx = SHR(NOT(AND(x, n) - 1), 31) -- 1|0
+            ry = SHR(NOT(AND(y, n) - 1), 31) -- 1|0
+            
             rx == 0 and ry == 0 --> 0*qn --> 0
             rx == 0 and ry == 1 --> 1*qn --> qn
             rx == 1 and ry == 1 --> 2*qn --> qn + qn
             rx == 1 and ry == 0 --> 3*qn --> qn + qn + qn
+            
+            d = d + OR( AND(value, -XOR(rx, ry)) + AND(SHL(value, 1), -rx) )
+            
             qn = SHR(qn, 2)
         --]]
         d = d + XOR(AND(3, rx), ry)*n*n
@@ -51,8 +58,8 @@ local function d2xy(n, d)
         x = XOR(x, AND(y, ry - 1) + AND(s + NOT(y + y), -rx))
         y = XOR(y, AND(x, ry - 1))
         x = XOR(x, AND(y, ry - 1) + AND(s + NOT(y + y), -rx))
-        x = x + s*rx -- x = x | x = x + s
-        y = y + s*ry -- y = y | y = y + s
+        x = OR(x + AND(s, -rx)) -- x = x | x = x + s
+        y = OR(y + AND(s, -ry)) -- y = y | y = y + s
         s = SHL(s, 1) -- s = s*2
         t = SHR(t, 2) -- t = t/4
     end
