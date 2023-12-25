@@ -22,8 +22,8 @@ local function xy2d(n, x, y)
         --[[ mbmb
             qn = n*n
             LOOP:
-            rx = SHR(NOT(AND(x, n) - 1), 31) -- 1|0
-            ry = SHR(NOT(AND(y, n) - 1), 31) -- 1|0
+            rx = SHR(-AND(x, n), 31) -- 1|0
+            ry = SHR(-AND(y, n), 31) -- 1|0
             
             rx == 0 and ry == 0 --> 0*qn --> 0
             rx == 0 and ry == 1 --> 1*qn --> qn
